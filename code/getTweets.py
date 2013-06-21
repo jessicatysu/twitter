@@ -7,7 +7,7 @@ import sys
 TWEETS_TO_RETRIEVE = 200 # Number of tweets to retrieve for each user
 
 # Logs into account "jsuPS120" with password "caltech" using OAuth
-# And yeah I don't really care if you know my password, it's a throwaway
+# I don't really care if you know my password, it's a throwaway
 # account anyway.
 api = twitter.Api(consumer_key='kfCLfVgcpV87LwYnjBLnFw',
                      consumer_secret='SEO4WAY5GdedrVBS8Hz11XQtuShmOt1uudMkAJTc',
@@ -21,6 +21,8 @@ def getAllTweets(congress_data, outfile, errfile):
         try:
             getSingleUser(data[0], outfile)
         except twitter.TwitterError:
+            # Write names of error'ed congressmen to file so we can get
+            # their tweets later or examine what the problem is.
             print "Error on " + data[0]
             print sys.exc_info()
             errfile.write(data[0])
