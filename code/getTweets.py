@@ -40,12 +40,29 @@ def getSingleUser(screen_name, outfile):
     # Get the user timeline for a single user
     statuses = api.GetUserTimeline(screen_name=screen_name, count=TWEETS_TO_RETRIEVE)
     for s in statuses:
+        # Write twitter name to file
         outfile.write(screen_name)
         outfile.write('^&^&^') # Separator
-        outfile.write(s.created_at.encode('ascii', 'replace'))
+
+        # Write date of tweet to file
+        outfile.write(processDate(s.created_at.encode('ascii', 'replace')))
         outfile.write('^&^&^')
-        outfile.write(s.text.encode('ascii', 'replace'))
+
+        # Write tweet to file, removing all newlines.
+        text = s.text.encode('ascii', 'replace')
+        text = "".join(text.split("\n"))
         outfile.write("\n")
+
+# Converts a date given by the Twitter system into a date recognized by
+# MySQL.  The original dates are in the form "Wed Jun 12 18:32:02 +0000
+# 2013".  The new dates should be in the form "2013-06-12 18:32:02".
+def processDate(string):
+    month = {"Jan": "01", "Feb": "02", "Mar": "03", "Apr": "04", "May":
+    "05", "Jun": "06", "Jul": "07", "Aug": "08", "Sep": "09", "Oct": "10",
+    "Nov": "11", "Dec": "12"}
+    darray = string.split(" ")
+    return (darray[5] + "-" + month[darray[1]] + "-" + darray[2] + " " +
+        darray[3])
 
 d = open("../data/Legislator-Info/data.csv", 'r')
 out = open("../data/Legislator-Info/tweets.csv", 'w')
